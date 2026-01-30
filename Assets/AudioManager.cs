@@ -4,7 +4,7 @@ public class AudioManager : MonoBehaviour
 {
     public static AudioManager instancia;
 
-    [Header("Músicas")]
+    [Header("Musicas")]
     public AudioClip musicaNormal;
     public AudioClip musicaBoss;
 

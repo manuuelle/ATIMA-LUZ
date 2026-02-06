@@ -20,15 +20,11 @@ public class PlayerMovimento : MonoBehaviour
     private bool noChao = true;
     private AudioSource audioSource;
     private bool tocandoPassos = false;
+
+    private Animator animator;
     private Vector3 escalaCorreta;
 
-    // 🔹 ANIMAÇÃO (ADICIONADO)
-    private Animator animator;
-
     void Start()
-    {
-        escalaCorreta = corpo.localScale;
-    }
     {
         rb = GetComponent<Rigidbody2D>();
 
@@ -36,9 +32,7 @@ public class PlayerMovimento : MonoBehaviour
         if (audioSource == null)
             audioSource = gameObject.AddComponent<AudioSource>();
 
-        // 🔹 pega o Animator (ADICIONADO)
-        animator = GetComponentInChildren<Animator>();
-
+        animator = corpo.GetComponent<Animator>();
         escalaCorreta = corpo.localScale;
     }
 
@@ -51,11 +45,17 @@ public class PlayerMovimento : MonoBehaviour
         Virar(horizontal);
         SonsDePassos(horizontal);
 
-        // 🔹 animação de andar / idle (ADICIONADO)
-        animator.SetFloat("velocidade", Mathf.Abs(horizontal));
-        animator.SetBool("noChao", noChao);
+        if (animator != null)
+        {
+            animator.SetFloat("velocidade", Mathf.Abs(horizontal));
+            animator.SetBool("noChao", noChao);
+        }
 
-        corpo.localScale = new Vector3(Mathf.Sign(corpo.localScale.x) * Mathf.Abs(escalaCorreta.x),escalaCorreta.y,escalaCorreta.z);
+        corpo.localScale = new Vector3(
+            Mathf.Sign(corpo.localScale.x) * Mathf.Abs(escalaCorreta.x),
+            escalaCorreta.y,
+            escalaCorreta.z
+        );
     }
 
     void Movimentar(float h)
@@ -73,12 +73,11 @@ public class PlayerMovimento : MonoBehaviour
             if (somPulo != null)
                 audioSource.PlayOneShot(somPulo);
 
-            // 🔹 animação de pulo (ADICIONADO)
-            animator.SetTrigger("pulo");
+            if (animator != null)
+                animator.SetTrigger("pulo");
         }
     }
 
-    // não muda lógica
     void Virar(float h)
     {
         if (h == 0) return;
@@ -99,13 +98,10 @@ public class PlayerMovimento : MonoBehaviour
                 tocandoPassos = true;
             }
         }
-        else
+        else if (tocandoPassos)
         {
-            if (tocandoPassos)
-            {
-                audioSource.Stop();
-                tocandoPassos = false;
-            }
+            audioSource.Stop();
+            tocandoPassos = false;
         }
     }
 
@@ -125,4 +121,3 @@ public class PlayerMovimento : MonoBehaviour
         }
     }
 }
-                 

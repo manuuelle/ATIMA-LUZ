@@ -40,7 +40,10 @@ public class AudioManager : MonoBehaviour
 
     public void TocarMusicaBoss()
     {
-        if (audioSource.clip == musicaBoss) return;
+        if (audioSource.clip != null)
+        {
+            if (audioSource.clip == musicaBoss) return;
+        }
 
         audioSource.clip = musicaBoss;
         audioSource.loop = true;

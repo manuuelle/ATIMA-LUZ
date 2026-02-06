@@ -22,7 +22,7 @@ public class PlayerMovimento : MonoBehaviour
     private bool tocandoPassos = false;
 
     private Animator animator;
-    private Vector3 escalaCorreta;
+    private SpriteRenderer spriteRenderer;
 
     void Start()
     {
@@ -33,7 +33,7 @@ public class PlayerMovimento : MonoBehaviour
             audioSource = gameObject.AddComponent<AudioSource>();
 
         animator = corpo.GetComponent<Animator>();
-        escalaCorreta = corpo.localScale;
+        spriteRenderer = corpo.GetComponent<SpriteRenderer>();
     }
 
     void Update()
@@ -50,12 +50,6 @@ public class PlayerMovimento : MonoBehaviour
             animator.SetFloat("velocidade", Mathf.Abs(horizontal));
             animator.SetBool("noChao", noChao);
         }
-
-        corpo.localScale = new Vector3(
-            Mathf.Sign(corpo.localScale.x) * Mathf.Abs(escalaCorreta.x),
-            escalaCorreta.y,
-            escalaCorreta.z
-        );
     }
 
     void Movimentar(float h)
@@ -82,15 +76,14 @@ public class PlayerMovimento : MonoBehaviour
     {
         if (h == 0) return;
 
-        SpriteRenderer sr = corpo.GetComponent<SpriteRenderer>();
-        sr.flipX = h < 0;
+        spriteRenderer.flipX = h < 0;
     }
 
     void SonsDePassos(float h)
     {
         if (Mathf.Abs(h) > 0.1f && noChao)
         {
-            if (!tocandoPassos)
+            if (!tocandoPassos && somPasso != null)
             {
                 audioSource.loop = true;
                 audioSource.clip = somPasso;
